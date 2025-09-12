@@ -20,15 +20,7 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
-    server: {
-      proxy: {
-        '/api': {
-          target: env.VITE_API_URL || 'http://localhost:5000', // Use VITE_API_URL se disponível, senão localhost
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-      },
-    },
+
     build: {
       outDir: 'dist',
     },
