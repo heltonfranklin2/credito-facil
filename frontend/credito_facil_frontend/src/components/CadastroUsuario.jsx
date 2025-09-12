@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowLeft, Upload, User, FileText, Home, Phone, Mail, Shield } from 'lucide-react'
 
-function CadastroUsuario({ onVoltar, onCadastroCompleto }) {
+function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
   const [formData, setFormData] = useState({
     nome_completo: '',
     cpf: '',
@@ -65,7 +65,7 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto }) {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/clientes', {
+      const response = await fetch(`${apiBaseUrl}/api/clientes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

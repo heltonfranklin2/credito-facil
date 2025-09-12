@@ -13,6 +13,9 @@ function App() {
   const [analiseCredito, setAnaliseCredito] = useState(null)
   const [emprestimo, setEmprestimo] = useState(null)
 
+  // Define a URL base da API usando a variável de ambiente
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
   const handleSolicitarEmprestimo = () => {
     setTelaAtual('cadastro')
   }
@@ -73,6 +76,7 @@ function App() {
         <CadastroUsuario 
           onVoltar={handleVoltar}
           onCadastroCompleto={handleCadastroCompleto}
+          apiBaseUrl={API_BASE_URL} // Passa a URL base da API para o componente
         />
       )}
       
@@ -81,6 +85,7 @@ function App() {
           cliente={cliente}
           onVoltar={handleVoltar}
           onContinuar={handleAnaliseCompleta}
+          apiBaseUrl={API_BASE_URL} // Passa a URL base da API para o componente
         />
       )}
       
@@ -90,6 +95,7 @@ function App() {
           cliente={cliente}
           onVoltar={handleVoltar}
           onContinuar={handleSimulacaoCompleta}
+          apiBaseUrl={API_BASE_URL} // Passa a URL base da API para o componente
         />
       )}
       
@@ -99,6 +105,7 @@ function App() {
           cliente={cliente}
           onVoltar={handleVoltar}
           onContinuar={handleContratoAssinado}
+          apiBaseUrl={API_BASE_URL} // Passa a URL base da API para o componente
         />
       )}
       
@@ -107,6 +114,7 @@ function App() {
           emprestimo={emprestimo}
           cliente={cliente}
           onNovoEmprestimo={handleNovoEmprestimo}
+          apiBaseUrl={API_BASE_URL} // Passa a URL base da API para o componente
         />
       )}
     </div>
@@ -114,3 +122,5 @@ function App() {
 }
 
 export default App
+
+
