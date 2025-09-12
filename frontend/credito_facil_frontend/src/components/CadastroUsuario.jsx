@@ -92,7 +92,7 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
     }
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/clientes`, {
+      const response = await fetch("https://credito-facil-production.up.railway.app/api/clientes", {
         method: 'POST',
         body: data, // FormData não precisa de Content-Type
       })
