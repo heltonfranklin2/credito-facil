@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -12,14 +12,18 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
   const [formData, setFormData] = useState({
     nome_completo: '',
     cpf: '',
-    documento_identidade: '',
-    comprovante_renda: '',
     endereco_completo: '',
     telefone: '',
     email: '',
     tem_garantia: false,
     garantias: []
   })
+
+  const [documentoIdentidadeFile, setDocumentoIdentidadeFile] = useState(null)
+  const [comprovanteRendaFile, setComprovanteRendaFile] = useState(null)
+
+  const documentoIdentidadeInputRef = useRef(null)
+  const comprovanteRendaInputRef = useRef(null)
 
   const [garantiaAtual, setGarantiaAtual] = useState({
     tipo: '',
@@ -34,6 +38,14 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
       ...prev,
       [field]: value
     }))
+  }
+
+  const handleFileChange = (type, file) => {
+    if (type === 'documento_identidade') {
+      setDocumentoIdentidadeFile(file)
+    } else if (type === 'comprovante_renda') {
+      setComprovanteRendaFile(file)
+    }
   }
 
   const handleGarantiaChange = (field, value) => {
@@ -64,13 +76,25 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
     e.preventDefault()
     setLoading(true)
 
+    const data = new FormData()
+    for (const key in formData) {
+      if (key === 'garantias') {
+        data.append(key, JSON.stringify(formData[key]))
+      } else {
+        data.append(key, formData[key])
+      }
+    }
+    if (documentoIdentidadeFile) {
+      data.append('documento_identidade', documentoIdentidadeFile)
+    }
+    if (comprovanteRendaFile) {
+      data.append('comprovante_renda', comprovanteRendaFile)
+    }
+
     try {
       const response = await fetch(`${apiBaseUrl}/api/clientes`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+        body: data, // FormData não precisa de Content-Type
       })
 
       if (response.ok) {
@@ -214,29 +238,37 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label>Documento de Identidade (CNH ou RG) *</Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                  <div 
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer"
+                    onClick={() => documentoIdentidadeInputRef.current.click()}
+                  >
                     <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600">Clique para fazer upload</p>
+                    <p className="text-sm text-gray-600">{documentoIdentidadeFile ? documentoIdentidadeFile.name : 'Clique para fazer upload'}</p>
                     <p className="text-xs text-gray-500 mt-1">PNG, JPG até 5MB</p>
                     <Input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleInputChange('documento_identidade', e.target.files[0]?.name || '')}
+                      onChange={(e) => handleFileChange('documento_identidade', e.target.files[0])}
                       className="hidden"
+                      ref={documentoIdentidadeInputRef}
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label>Comprovante de Renda *</Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                  <div 
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer"
+                    onClick={() => comprovanteRendaInputRef.current.click()}
+                  >
                     <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600">Clique para fazer upload</p>
+                    <p className="text-sm text-gray-600">{comprovanteRendaFile ? comprovanteRendaFile.name : 'Clique para fazer upload'}</p>
                     <p className="text-xs text-gray-500 mt-1">PNG, JPG até 5MB</p>
                     <Input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleInputChange('comprovante_renda', e.target.files[0]?.name || '')}
+                      onChange={(e) => handleFileChange('comprovante_renda', e.target.files[0])}
                       className="hidden"
+                      ref={comprovanteRendaInputRef}
                     />
                   </div>
                 </div>
@@ -372,4 +404,5 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
 }
 
 export default CadastroUsuario
+
 
