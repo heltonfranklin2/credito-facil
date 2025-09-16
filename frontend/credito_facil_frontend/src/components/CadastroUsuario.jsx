@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowLeft, Upload, User, FileText, Home, Phone, Mail, Shield } from 'lucide-react'
 
-function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
+function CadastroUsuario({ onVoltar, onCadastroCompleto }) {
   const [formData, setFormData] = useState({
     nome_completo: '',
     cpf: '',
@@ -91,11 +91,7 @@ function CadastroUsuario({ onVoltar, onCadastroCompleto, apiBaseUrl }) {
       data.append('comprovante_renda', comprovanteRendaFile)
     }
 
-    console.log("Enviando dados para o backend:", formData);
-    console.log("URL do backend:", "https://credito-facil-production.up.railway.app/api/clientes");
-    for (let pair of data.entries()) {
-      console.log(pair[0]+ ", " + pair[1]); 
-    }
+
     try {
       const response = await fetch("https://credito-facil-production.up.railway.app/api/clientes", {
         method: 'POST',
